@@ -77,18 +77,18 @@ def create_folds(
     print(f'R2: {score_fold}. Ave. fold: {np.mean(score_fold)}')  
     
 
+# =============== sample usage ============== #
+# from sklearn.ensemble import GradientBoostingRegressor
 
-from sklearn.ensemble import GradientBoostingRegressor
+# df = pd.read_csv('sample_dataframe.csv')
+# X = df.iloc[:,:-2]
+# y = df.iloc[:,-2]
 
-df = pd.read_csv('sample_dataframe.csv')
-X = df.iloc[:,:-2]
-y = df.iloc[:,-2]
+# model = GradientBoostingRegressor(n_estimators = 500, 
+#                                   verbose = 0)
 
-model = GradientBoostingRegressor(n_estimators = 500, 
-                                  verbose = 0)
-
-create_folds(df,
-             X_cols = list(X.columns),
-             y_col = 'y_real',
-             model = model,
-            folds = 10)
+# create_folds(df,
+#              X_cols = list(X.columns),
+#              y_col = 'y_real',
+#              model = model,
+#             folds = 10)
