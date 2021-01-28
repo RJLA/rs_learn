@@ -74,7 +74,7 @@ def make_pca_svd_graph(df,
         plt.tight_layout()
 
         plt.savefig(os.path.join(graph_output_path,
-        '%s_%s.png'%(name,file_name)), 
+        f'{name}_{file_name}.png'), 
                     dpi = 300)
         plt.show()
         plt.close()
@@ -94,3 +94,18 @@ def make_pca_svd_graph(df,
                 title = 'Single value decomposition',
                 name = 'svd',
                 range_n = range(1,x_axis)) 
+
+
+#-------- sample usage ------------#
+# import pandas as pd
+# df = pd.read_csv('sample_data.csv')
+# make_pca_svd_graph(df,
+#                 'pca_svd_graph')
+
+
+
+
+
+
+
+
