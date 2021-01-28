@@ -40,3 +40,11 @@ def transform_pca_svd(df,
     and single values.''')
 
     return df_pca, df_svd
+
+#-------- sample usage ------------#
+# import pandas as pd
+# df = pd.read_csv('sample_data.csv')
+# df_pca, df_svd = transform_pca_svd(df,
+#                 'sample',
+#                 n_pca = 3,
+#                 n_svd = 3)
