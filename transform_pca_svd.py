@@ -22,17 +22,17 @@ def transform_pca_svd(df,
     svd_values = TruncatedSVD(n_components = n_svd - 1).fit_transform(df_norm)
     
     df_pca = pd.DataFrame(pca_values,
-                columns = ['PC%s'%i for i in range(1, n_pca + 1)]).set_index(df.index.values)
+                columns = [f'{i}' for i in range(1, n_pca + 1)]).set_index(df.index.values)
 
     df_pca.to_csv(os.path.join(misc_output_path,
     'pca_%s.csv'%file_name),
                 index = False)
                 
     df_svd = pd.DataFrame(svd_values,
-                columns = ['SVD%s'%i for i in range(1, n_svd)]).set_index(df.index.values)
+                columns = [f'{i}' for i in range(1, n_svd)]).set_index(df.index.values)
     
     df_svd.to_csv(os.path.join(misc_output_path,
-     'svd_%s.csv'%file_name),
+     f'svd_{file_name}.csv'),
             index = False)
 
     print('''
@@ -41,7 +41,7 @@ def transform_pca_svd(df,
 
     return df_pca, df_svd
 
-#-------- sample usage ------------#
+# ###-------- sample usage ------------#
 # import pandas as pd
 # df = pd.read_csv('sample_data.csv')
 # df_pca, df_svd = transform_pca_svd(df,
