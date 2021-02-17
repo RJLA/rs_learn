@@ -15,9 +15,6 @@ def select_features_gd(
         X_train,
         y_train,
         file_name,
-        model = GradientBoostingRegressor(n_estimators = 100,
-                                          verbose = 0),
-        scaler = StandardScaler(),
         figsize = (20, 20),
         fontsize_ticks = 20,
         labelsize = 15,
@@ -35,12 +32,18 @@ def select_features_gd(
     if not os.path.exists(graph_output_path):
         os.makedirs(graph_output_path)
         
-    std_train = pd.DataFrame(StandardScaler().fit_transform(X_train), 
-                               columns = X_train.columns).set_index(X_train.index)
-    model.fit(std_train, 
-                   y_train)
+    
+    
+    gb = GradientBoostingRegressor(n_estimators = 1000, 
+                                   verbose = 0,
+                                  max_features = 'sqrt')
+    pipeline = Pipeline(steps=[('sc', StandardScaler()),
+                ('model', gb)])
+    
+    pipeline.fit(X_train, y_train)
         
-    model_imp_feat = SelectFromModel(model, 
+        
+    model_imp_feat = SelectFromModel(pipeline.named_steps['model'], 
                             prefit = True,
                             threshold = threshold)
 
@@ -48,11 +51,13 @@ def select_features_gd(
     imp_feat = [x for x, 
                   y in zip(X_train.columns, 
                            model_imp_feat.get_support()) if y == True]
-
-    reduced_X = pd.DataFrame(model_imp_feat.transform(std_train),
-                             columns = imp_feat).set_index(std_train.index)
     
-    model_imp = model.fit(reduced_X, 
+
+
+    reduced_X = pd.DataFrame(model_imp_feat.transform(StandardScaler().fit_transform(X_train)),
+                             columns = imp_feat).set_index(X_train.index)
+    
+    model_imp = gb.fit(reduced_X, 
                           y_train)
     
 #    #Plot feature importance
@@ -139,10 +144,6 @@ def select_features_gd(
 
     plt.show()  
     
-    pipeline = Pipeline([('sc', 
-                  scaler),
-                ('mod',
-                 model)])
     
     kf = KFold(n_splits = 10, 
                shuffle = True) 
@@ -168,15 +169,15 @@ def select_features_gd(
 
     return labels, df_imp 
 #
-#df = pd.read_csv('sample_dataframe.csv')
-#X =  df.iloc[:,:-2]
-#y = df.iloc[:,-2]
-###
-#aa,bb = select_features_gd(X,y,'test',figsize = (10,10),
-#    fontsize_ticks = 25,
-#    labelsize = 20,
-#    titlesize = 18,    
-#    threshold = 'mean')
+# df = pd.read_csv('sample_data.csv')
+# X =  df.iloc[:,:-1]
+# y = df.iloc[:,-1]
+# ###
+# aa,bb = select_features_gd(X,y,'test',figsize = (10,10),
+#     fontsize_ticks = 25,
+#     labelsize = 20,
+#     titlesize = 18,    
+#     threshold = 'mean')
 
 #select_features_gd(X,y,'test',figsize = (10,10),
 #    fontsize_ticks = 25,
