@@ -9,7 +9,7 @@ def train_ensemble_reg(X_train,
                    y_train,
                    key_list,
                    model_list,
-                   param_grid_dct_list,
+                   param_list,
                    name,
                    ws,
                    folds = 10,
@@ -62,10 +62,14 @@ def train_ensemble_reg(X_train,
         print(f'Best score: {rscv.best_score_}')
         print(f'Best params: {rscv.best_params_}')
         print(f'Best params: {rscv.best_estimator_}')
+        
+        model_output = f'{name}_{n}_{key}.sav'
+        
+        print(f'Model save: {model_output}')
             
         joblib.dump(rscv, 
                     os.path.join(base_model_path,
-                                 f'{name}_{n}_{key}.sav'))
+                                 model_output))
         
         # with open(os.path.join(misc_output_path,
         #                        f'kfold_{name}_{n}_{key}.txt'),"w") as t:
@@ -84,7 +88,7 @@ def train_ensemble_reg(X_train,
 
         for key, model, params in zip(key_list,
                               model_list,
-                              param_grid_dct_list):
+                              param_list):
             print()
             print(f'Number of iterations {n}')
             print(f'Model {key}:' )
