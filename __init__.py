@@ -43,7 +43,7 @@ from .fix_imbalance import fix_imbalance
 from .Image_to_array import Image_to_array
 from .make_lineplot import make_lineplot
 from .LightGBM_Opt_SKf import LightGBM_Opt_SKf
-from .skfreg_opt_fs import skfreg_opt_fs
+from .skfreg_opt import skfreg_opt
 import os
 add_path = os.path.join(os.getcwd(),'output_rs_learn',
               'tuned_models')
