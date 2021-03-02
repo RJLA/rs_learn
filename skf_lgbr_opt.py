@@ -140,19 +140,7 @@ class skf_lgbr_opt():
             print('    "{}": {},'.format(key, value))
             
             
-        model_f = LGBMRegressor(
-                boosting_type = trial.params['boosting_type'],
-                objective = trial.params['objective'],
-                lambda_l1 = trial.params['lambda_l1'],
-                lambda_l2 = trial.params['lambda_l2'],
-                num_leaves = trial.params['num_leaves'],
-                feature_fraction = trial.params['feature_fraction'],
-                bagging_fraction = trial.params['bagging_fraction'],
-                bagging_freq = trial.params['bagging_freq'],
-                min_child_samples = trial.params['min_child_samples'],
-                learning_rate = trial.params["learning_rate"],
-                n_estimators = 500
-                ) 
+        model_f = LGBMRegressor(**trial.params) 
         
         pipeline = Pipeline([('sc', self.sc),
                              ('model', model_f)])
