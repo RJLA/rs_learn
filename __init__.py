@@ -44,6 +44,7 @@ from .Image_to_array import Image_to_array
 from .make_lineplot import make_lineplot
 from .LightGBM_Opt_SKf import LightGBM_Opt_SKf
 from .skf_lgbr_opt import skf_lgbr_opt
+from .skf_xgbr_opt import skf_xgbr_opt
 import os
 add_path = os.path.join(os.getcwd(),'output_rs_learn',
               'tuned_models')
