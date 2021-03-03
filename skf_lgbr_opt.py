@@ -12,12 +12,6 @@ import numpy as np
 
 
 class skf_lgbr_opt():
-    
-    print('''
-          includes stratified KF, 
-          hyperparam optimization of
-          lightgbm in regression
-          ''')
 
     base_model_path = os.path.join(os.getcwd(),
                                    'output_rs_learn',
@@ -98,11 +92,13 @@ class skf_lgbr_opt():
                 'lambda_l1': trial.suggest_loguniform('lambda_l1', 1e-8, 10.0),
                 'lambda_l2': trial.suggest_loguniform('lambda_l2', 1e-8, 10.0),
                 'num_leaves': trial.suggest_int('num_leaves', 2, 256),
-                'feature_fraction': trial.suggest_uniform('feature_fraction', 0.1, 1.0),
-                'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.1, 1.0),
+                'feature_fraction': min(trial.suggest_float("feature_fraction", 0.4, 1.0 + 1e-12), 1.0),
+                'bagging_fraction': min(trial.suggest_float("bagging_fraction", 0.4, 1.0 + 1e-12), 1.0),
                 'bagging_freq': trial.suggest_int('bagging_freq', 1, 20),
                 'min_child_samples': trial.suggest_int('min_child_samples', 5, 100)
                 }      
+            
+            pruning_callback = optuna.integration.LightGBMPruningCallback(trial, "rmse", 'eval')
             
             self.model = lgb.train(
                     params, 
@@ -111,6 +107,7 @@ class skf_lgbr_opt():
                     valid_sets = [lgb_test, lgb_train],
                     early_stopping_rounds = 500,
                     num_boost_round  = 10000,
+                    callbacks = [pruning_callback]
                     )     
             
             pred_test = self.model.predict(self.X_test_sc)
@@ -210,19 +207,19 @@ class skf_lgbr_opt():
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33)
 # df_train = pd.concat([X_train, y_train], axis = 1)
 
-# optimize = skfreg_opt(
+# optimize = skf_lgbr_opt(
 #             df_train = df_train,
 #             X_cols = X_train.columns,
 #             y_col = 'Chl-a',
-#             num_trials = 2,
-#             num_folds = 2,
+#             num_trials = 10,
+#             num_folds = 10,
 #             name = 'test_opt'
 #             )
 
 # model_params, df_predictions, r2_train_res_1, r2_train_res_2, rmse_train_1, rmse_train_2, r2_test, rmse_test = optimize.execute(
 #                                                 X_test_valid = X_test, 
 #                                                 y_test_valid = y_test,
-#                                                 num_folds = 2 #loo method len(y_train)
+#                                                 num_folds = 10 #loo method len(y_train)
 #                                                 )
 
 
