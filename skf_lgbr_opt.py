@@ -136,13 +136,17 @@ class skf_lgbr_opt():
         for key, value in trial.params.items():
             print('    "{}": {},'.format(key, value))
             
-            
-        model_f = LGBMRegressor(**trial.params) 
+
+        model_f = LGBMRegressor(
+                                n_estimators = 1000,
+                                **trial.params,
+                                ) 
         
         pipeline = Pipeline([('sc', self.sc),
                              ('model', model_f)])
         
         pipeline.fit(self.X_data, self.y_data)
+    
         
         joblib.dump(pipeline, 
                  os.path.join(
@@ -198,29 +202,29 @@ class skf_lgbr_opt():
         
 
             
-# df = pd.read_csv('tanglaw_data.csv')
-# # df = pd.read_csv(r"C:\Users\Dlaniger\Projects\MECO_TECO\paper\2020-05-07\final\df_train_final.csv")
-# X = df.iloc[:,:-1]
-# y = df.iloc[:,-1]
-# from sklearn.model_selection import train_test_split
+df = pd.read_csv('tanglaw_data.csv')
+# df = pd.read_csv(r"C:\Users\Dlaniger\Projects\MECO_TECO\paper\2020-05-07\final\df_train_final.csv")
+X = df.iloc[:,:-1]
+y = df.iloc[:,-1]
+from sklearn.model_selection import train_test_split
 
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33)
-# df_train = pd.concat([X_train, y_train], axis = 1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33)
+df_train = pd.concat([X_train, y_train], axis = 1)
 
-# optimize = skf_lgbr_opt(
-#             df_train = df_train,
-#             X_cols = X_train.columns,
-#             y_col = 'Chl-a',
-#             num_trials = 10,
-#             num_folds = 10,
-#             name = 'test_opt'
-#             )
+optimize = skf_lgbr_opt(
+            df_train = df_train,
+            X_cols = X_train.columns,
+            y_col = 'Chl-a',
+            num_trials = 5,
+            num_folds = 10,
+            name = 'test_opt'
+            )
 
-# model_params, df_predictions, r2_train_res_1, r2_train_res_2, rmse_train_1, rmse_train_2, r2_test, rmse_test = optimize.execute(
-#                                                 X_test_valid = X_test, 
-#                                                 y_test_valid = y_test,
-#                                                 num_folds = 10 #loo method len(y_train)
-#                                                 )
+model_params, df_predictions, r2_train_res_1, r2_train_res_2, rmse_train_1, rmse_train_2, r2_test, rmse_test = optimize.execute(
+                                                X_test_valid = X_test, 
+                                                y_test_valid = y_test,
+                                                num_folds = 10 #loo method len(y_train)
+                                                )
 
 
 
